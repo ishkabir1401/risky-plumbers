@@ -1,7 +1,5 @@
 package model
 
-import "sync"
-
 type Risk struct {
 	ID          string `json:"id"`
 	State       string `json:"state"`
@@ -10,6 +8,5 @@ type Risk struct {
 }
 
 type RiskStore struct {
-	Mux   sync.Mutex
 	Risks map[string]*Risk
 }

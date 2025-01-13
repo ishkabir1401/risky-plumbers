@@ -39,7 +39,7 @@ func CreateRisk(c *gin.Context) {
 	settings.RiskStoreStruct.Risks[req.ID] = &req
 	defer settings.RiskStoreStruct.Mux.Unlock()
 
-	c.JSON(http.StatusCreated, req)
+	c.JSON(http.StatusOK, gin.H{"data": req})
 }
 
 func GetRisk(c *gin.Context) {

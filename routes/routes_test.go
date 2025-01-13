@@ -50,12 +50,12 @@ func TestCreateRisk(t *testing.T) {
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, http.StatusCreated, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 
-	var createdRisk map[string]string
+	var createdRisk map[string]map[string]string
 	_ = json.Unmarshal(w.Body.Bytes(), &createdRisk)
-	assert.Equal(t, "Test Risk", createdRisk["title"])
-	assert.NotEmpty(t, createdRisk["id"])
+	assert.Equal(t, "Test Risk", createdRisk["data"]["title"])
+	assert.NotEmpty(t, createdRisk["data"]["id"])
 }
 
 func TestGetRisk(t *testing.T) {
@@ -73,19 +73,19 @@ func TestGetRisk(t *testing.T) {
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
-	var createdRisk map[string]string
+	var createdRisk map[string]map[string]string
 	_ = json.Unmarshal(w.Body.Bytes(), &createdRisk)
-	riskID := createdRisk["id"]
+	riskID := createdRisk["data"]["id"]
 
 	req, _ = http.NewRequest(http.MethodGet, "/v1/risks/"+riskID, nil)
 	w = httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	var fetchedRisk map[string]string
+	var fetchedRisk map[string]map[string]string
 	_ = json.Unmarshal(w.Body.Bytes(), &fetchedRisk)
-	assert.Equal(t, "Test Risk", fetchedRisk["title"])
-	assert.Equal(t, riskID, fetchedRisk["id"])
+	assert.Equal(t, "Test Risk", fetchedRisk["data"]["title"])
+	assert.Equal(t, riskID, fetchedRisk["data"]["id"])
 }
 
 func TestCreateRiskWithInvalidState(t *testing.T) {
@@ -157,7 +157,7 @@ func TestConcurrentRiskCreation(t *testing.T) {
 			req.Header.Set("Content-Type", "application/json")
 			w := httptest.NewRecorder()
 			router.ServeHTTP(w, req)
-			assert.Equal(t, http.StatusCreated, w.Code)
+			assert.Equal(t, http.StatusOK, w.Code)
 		}()
 	}
 	wg.Wait()

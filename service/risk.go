@@ -12,7 +12,7 @@ func ListRisks(c *gin.Context) {
 	settings.RiskStoreStruct.Mux.Lock()
 	defer settings.RiskStoreStruct.Mux.Unlock()
 
-	var risks []model.Risk
+	var risks = make([]model.Risk, 0)
 	for _, risk := range settings.RiskStoreStruct.Risks {
 		risks = append(risks, *risk)
 	}
